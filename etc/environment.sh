@@ -10,12 +10,12 @@
 #
 
 # bring in per-project configurations
-if [ -f "$ETC_DIR/project-environment.sh" ]; then
-    source $ETC_DIR/project-environment.sh
+if [ -f "$PROJECT_HOME_DIR/etc/project-environment.sh" ]; then
+    source $PROJECT_HOME_DIR/etc/project-environment.sh
 fi
 
 # bring in local configurations
-if [ -f "$ETC_DIR/local-environment.sh" ]; then
-    source $ETC_DIR/local-environment.sh
+if [ -f "$PROJECT_HOME_DIR/etc/local-environment.sh" ]; then
+    source $PROJECT_HOME_DIR/etc/local-environment.sh
 fi
 
