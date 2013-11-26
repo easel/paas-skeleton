@@ -6,12 +6,15 @@
 # become a python project
 source ${PROJECT_HOME_DIR}/etc/paas-skeleton/python/virtualenv.sh
 
+
+PROJECT_NAME=paas
+
 if [[ "${OPENSHIFT_POSTGRESQL_DB_URL}xx" != "xx" ]]; then
     export DATABASE_URL=$OPENSHIFT_POSTGRESQL_DB_URL/$PGDATABASE
-    export DJANGO_SETTINGS_MODULE="rodin.settings"
+    export DJANGO_SETTINGS_MODULE="$PROJECT_NAME.settings"
 else
-    export DJANGO_SETTINGS_MODULE=rodin.test_settings
-    export DATABASE_URL="postgres://localhost/rodin-dev"
+    export DJANGO_SETTINGS_MODULE=$PROJECT_NAME.test_settings
+    export DATABASE_URL="postgres://localhost/$PROJECT_NAME-dev"
 fi
 
 if [[ "${OPENSHIFT_PATTON_IP}xx" == "xx" ]]; then
