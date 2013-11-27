@@ -10,13 +10,13 @@
 #
 
 # bring in per-project configurations
-if [ -f "$ETC_DIR/project-environment.sh" ]; then
-    source $ETC_DIR/project-environment.sh
+if [ -f "$PROJECT_HOME_DIR/etc/project-environment.sh" ]; then
+    source $PROJECT_HOME_DIR/etc/project-environment.sh
 fi
 
 # bring in local configurations from environment.d/*.sh
-if [ -d "$ETC_DIR/environment.d/" ]; then
-    for i in $ETC_DIR/environment.d/*.sh; do
+if [ -d "$PROJECT_HOME_DIR/etc/environment.d/" ]; then
+    for i in $PROJECT_HOME_DIR/etc/environment.d/*.sh; do
       if [ -r "$i" ]; then
         . $i
       fi

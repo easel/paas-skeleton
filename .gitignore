@@ -1,3 +1,5 @@
 *.iml
 *.idea*
+*.pyc
 etc/local-environment.sh
+build/

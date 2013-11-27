@@ -20,7 +20,7 @@ $(PROJECT_HOME_DIR)/requirements.txt:
 	echo "honcho" >> $@
 
 $(VE_ROOT)/lib/python2.7/site-packages: $(VE_ROOT) $(PROJECT_HOME_DIR)/etc/paas-skeleton/python/virtualenv-makefile.inc $(PROJECT_HOME_DIR)/requirements.txt
-	easy_install readline
+	$(VE_ROOT)/bin/easy_install readline
 	$(VE_ROOT)/bin/pip install $(PIP_FLAGS) -r requirements.txt
 
 $(VE_ROOT)/bin/activate: $(VE_ROOT)/lib/python2.7/site-packages
