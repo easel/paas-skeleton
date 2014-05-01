@@ -36,15 +36,10 @@ if [[ "x${VIRTUAL_ENV}x" != "xx" ]]; then
     # a python virtualenv is active, use it
     PAAS_SKELETON_WORK_DIR=${VIRTUAL_ENV}
 
-elif [[ "x${OPENSHIFT_DATA_DIR}x" != "xx" ]]; then
-    # we are on openshift, use the data dir
-    PAAS_SKELETON_WORK_DIR=${OPENSHIFT_DATA_DIR}
+elif [[ "x${VE_ROOT}x" != "xx" ]]; then
+    # we have a VE_ROOT defined, use it for our work directory
+    PAAS_SKELETON_WORK_DIR=${VE_ROOT}
 
-    # Set the Postgres LD_LIBRARY_PATH if it isn't already set
-    PG_LD_PATH=$(LD_LIBRARY_PATH="" scl enable postgresql92 "printenv LD_LIBRARY_PATH")
-    if [[ "xx${LD_LIBRARY_PATH/$PG_LD_PATH//}" == "xx${LD_LIBRARY_PATH}" ]]; then
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PG_LD_PATH; 
-    fi
 else
     # otherwise, work out of a directory
     PAAS_SKELETON_WORK_DIR=${HOME}/.paas_skeleton/`basename ${PWD}`
