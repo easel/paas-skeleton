@@ -4,7 +4,7 @@
 # any environment options necessary to properly interact with a supported
 # PAAS container should be handled here.
 #
-# this file will automatically load in "project-environment.sh" and "local-environment.sh"
+# this file will automatically load in scripts that it finds in "etc/environment.d"
 # to load per-project and per-environment configurations. You should not need to modify
 # this file itself
 #

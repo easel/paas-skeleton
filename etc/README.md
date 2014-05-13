@@ -1,8 +1,8 @@
 Environment Configuration
 -------------------------
 
-Place project-specific environmental configurations in the file
-etc/project-environment.sh.
+Place project-specific environmental configurations in scripts
+in etc/environment.d
 
 
 Supervisor Configuration
