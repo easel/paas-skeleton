@@ -7,5 +7,5 @@
 # application's environement.
 
 # At a minimum, you should create a script that sets:
-# PROJECT_NAME=<your project name>
+# export PROJECT_NAME=<your project name>
 
