@@ -3,6 +3,10 @@
 # load in "helpers" from the etc/paas-skeleton/ folder by adding lines such as:
 # source ${PROJECT_HOME_DIR}/etc/paas-skeleton/python/virtualenv.sh
 
+# add BINARY_PACKAGES or PIP_EXTRAS envs with additional python
+# packages, which differs between openshift and other systems
+source ${PROJECT_HOME_DIR}/etc/prepare_binary_and_extra_packages.sh
+
 # become a python project
 source ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv.sh
 
