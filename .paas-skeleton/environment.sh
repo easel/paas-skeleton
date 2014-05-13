@@ -51,6 +51,33 @@ if [ ! -d ${PAAS_SKELETON_WORK_DIR} ]; then
     mkdir -p ${PAAS_SKELETON_WORK_DIR}
 fi
 
+# add BINARY_PACKAGES or PIP_EXTRAS envs with additional python
+# packages, which differs between openshift and other systems
+source ${PROJECT_HOME_DIR}/etc/prepare_binary_and_extra_packages.sh
+
+# become a python project
+source ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv.sh
+
+if [[ "${OPENSHIFT_POSTGRESQL_DB_URL}xx" != "xx" ]]; then
+    export DATABASE_URL=$OPENSHIFT_POSTGRESQL_DB_URL/$PGDATABASE
+    export DJANGO_SETTINGS_MODULE="${PROJECT_NAME}.settings"
+else
+    export DJANGO_SETTINGS_MODULE="${PROJECT_NAME}.test_settings"
+    export DATABASE_URL="postgres://localhost/${PROJECT_NAME}_test"
+fi
+
+if [[ "${OPENSHIFT_PATTON_IP}xx" == "xx" ]]; then
+    export OPENSHIFT_PATTON_IP="127.0.0.1"
+    export OPENSHIFT_PATTON_PORT="50009"
+fi
+
+export ES_CLASSPATH="$VE_ROOT/share/elasticsearch/lib/*"
+if [[ "${ELASTICSEARCH_SERVER_URL}xx" != "xx" ]]; then
+    export ELASTICSEARCH_SERVER_URL="$ELASTICSEARCH_SERVER_URL"
+else
+    export ELASTICSEARCH_SERVER_URL="http://localhost:50015"
+fi
+
 # bring in local configurations from environment.d/*.sh
 if [ -d "${PROJECT_HOME_DIR}/etc/environment.d/" ]; then
     for i in ${PROJECT_HOME_DIR}/etc/environment.d/*.sh; do
@@ -61,7 +88,3 @@ if [ -d "${PROJECT_HOME_DIR}/etc/environment.d/" ]; then
     unset i
 fi
 
-# bring in per-project configurations
-if [ -f "${PROJECT_HOME_DIR}/etc/project-environment.sh" ]; then
-    source ${PROJECT_HOME_DIR}/etc/project-environment.sh
-fi
