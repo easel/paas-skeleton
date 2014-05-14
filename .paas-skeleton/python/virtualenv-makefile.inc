@@ -9,7 +9,7 @@ PIP_FLAGS := --quiet --default-timeout=400 --download-cache=${PIP_DOWNLOAD_CACHE
 .PHONY: check-python-virtualenv
 check-python-virtualenv: $(PYTHON_BIN)
 	if [ "xx" != 'x$(BINARY_PACKAGES)x' ]; then for bin_pack in $(BINARY_PACKAGES); do \
-	echo "Installing $bin_pack"; \
+	echo "Installing $$bin_pack"; \
 	$(VIRTUAL_ENV)/bin/easy_install $$bin_pack; \
 	touch $(VIRTUAL_ENV)/.ve_complete; \
 	done; fi
