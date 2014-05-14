@@ -1,0 +1,95 @@
+== Understanding +patton-cartridge+ and +paas-skeleton+ based OpenShift applications
+
+=== Overview
+
+==== +pattron-cartridge+
+
++patton-cartridge+ is a custom OpenShift cartridge developed and used by WiserTogether to provide a 
+reusable, common runtime environment for server-side Python applications. Several factors drive the need for creating
+and using this custom cartridge (as opposed to using standard OpenShift Python cartridges). These include:
+
+* Need for a custom python virtual environment
+* Need to be able to execute multiple processes (through supervisor)
+* TODO Erik had two more points here
+
+==== +paas-skeleton+
+
++paas-skeleton+ is a set of reusable components (scripts and makefile includes) designed to facilitate environment
+configuration and application building in a platform agnostic manner. The components contained in +paas-skeleton+
+allow applications to be deployed and run locally and in PAAS providers such as OpenShift.
+
+The recommended way to integrate +paas-skeleton+ into your application is to embed a copy of the
+WiserTogether GitHub +paas-skeleton+ source directly into your application's GitHub repo. Instructions
+for doing this can be found in the +paas-skeleton+ 
+ https://github.com/WiserTogether/paas-skeleton/blob/master/.paas-skeleton/README.md
+
+===== Configuring and building an application
+
+There are two main entry points provided by +paas-skeleton+: +env.sh+ and the +Makefile+. The former configures the
+environment for the application while the latter builds the application. There is also a +Procfile+ used to launch
+the application.  Application developers should not
+edit the +env.sh+ to invoke directly the +make+ command (in fact, the +env.sh+ should not be edited under 
+any circumstance - see _Customizing the environment_). This will produce unintented and unwanted side-effects when
+integrating with +patton-cartridge+ in an OpenShift environment.  
+
+To configure and build an application locally issue the following two commands:
+
+----
+# configure and build application
+source env.sh
+make
+----
+
+===== Customizing the environment
+
+Application developers should not edit any of the files inherited from +paas-skeleton+ in order to customize their
+application environment. Instead, developers should place customization scripts in directory +etc/environment.d+. The
++paas-skeleton+ infrastructure will execute any +.sh+ file that it finds in this directory. 
+
+===== Binary package support
+
++paas-skeleton+ provides the ability for developers to specify and use precompiled python binary packages (in .egg
+format) for deployment on OpenShift. The use of precompiled packages is recommended in situations where the 
+traditional pip-based build from source is problematic due to time or space constraints. Follow the following steps
+to utilize a binary package for OpenShift.
+
+. Place the egg file in the +lib+ directory of your project root directory.
+. Remove the entry for the library in question from your +requirements.txt+ file.
+. Edit the +etc/binary_and_extra_packages.sh+ file to reference your precompiled library. Follow the commented out
+  example illustrated in that file.
+
+
+=== Customizing OpenShift builds
+
+Application developers can customize the build  process of +patton-cartridge+ and +pass-skeleton+
+based OpenShift applications. The steps that comprise the OpenShift build process are either predefined actions
+(e.g. unpack application source code into a +repo+)
+that OpenShift performs or they are extensible steps. There are two types of extensible steps: 
+cartridge control actions and application action hooks. Cartridge control actions are defined
+and implemented in +patton-cartridge+. Application action hooks are defined and implemented
+by developers in their applications as script files in 
+directory +application root/.openshift/action_hooks+. It is through these action hooks that developers
+can customize and augment the OpenShift build process.
+
+==== Available action hooks
+
+The following action hooks are available for developers to implement:
+
+* +pre-build+ - Executes after OpenShift has unpacked the git repo for the application
+* +fetch-dependencies+ - Executes after +patton-cartridge+ has created the Python virtualenv. Your application should implement this action hook and source +env.sh+ and call +make+.
+* +build+ - Executes just after relocating the python virtual environment
+* +prepare+ - Executes after build, but prior to the start of any cartridges
+* +deploy+ - Executes after all secondary cartridges are started
+* +post-deploy+ - Executes after the application is started
+
+TIP: Action hook script files must be named to match the name of the action hook (+pre-build+,
++build+, +deploy+, etc).  
+
+For full documentation on the OpenShift build process see http://openshift.github.io/documentation/oo_cartridge_developers_guide.html#default-build-lifecycle
+
+
+
+
+
+
+
