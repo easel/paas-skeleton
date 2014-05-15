@@ -21,6 +21,8 @@ source ${PROJECT_HOME_DIR}/.paas-skeleton/detect_os.sh
 # PACKAGES_UBUNTU_13_10="postgresql postgresql-contrib libpq-dev swig libncurses5-dev xmlsec1 python-m2crypto"
 # PACKAGES_MAC_OS="postgresql postgresql-contrib libpq-dev swig libncurses5-dev xmlsec1"
 
+source ${PROJECT_HOME_DIR}/.paas-skeleton/asciidoc/asciidoc-env.sh
+
 if [ -f "${PROJECT_HOME_DIR}/etc/systems_packages.sh" ]; then
     source ${PROJECT_HOME_DIR}/.paas-skeleton/install_packages.sh
 fi
