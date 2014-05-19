@@ -10,6 +10,8 @@ else
     export VIRTUAL_ENV=${PAAS_SKELETON_WORK_DIR}
 fi
 
+PYTHON_BIN=${VE_ROOT}/bin/python
+
 # set PIP_DOWNLOAD_CACHE if not already set
 if [[ "x${PIP_DOWNLOAD_CACHE}x" == "xx" ]]; then
     PIP_DOWNLOAD_CACHE=${PAAS_SKELETON_WORK_DIR}/.download-cache
