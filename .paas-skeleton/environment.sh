@@ -38,6 +38,10 @@ if [[ "x${VIRTUAL_ENV}x" != "xx" ]]; then
     # a python virtualenv is active, use it
     PAAS_SKELETON_WORK_DIR=${VIRTUAL_ENV}
 
+elif [[ "x${OPENSHIFT_DATA_DIR}x" != "xx" ]]; then
+    # we are on openshift, use the data dir
+    PAAS_SKELETON_WORK_DIR=${OPENSHIFT_DATA_DIR}
+
 elif [[ "x${VE_ROOT}x" != "xx" ]]; then
     # we have a VE_ROOT defined, use it for our work directory
     PAAS_SKELETON_WORK_DIR=${VE_ROOT}
