@@ -64,6 +64,18 @@ source ${PROJECT_HOME_DIR}/etc/prepare_binary_and_extra_packages.sh
 # become a python project
 source ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv.sh
 
+export NEW_RELIC_CONFIG_FILE=${PROJECT_HOME_DIR}/newrelic.ini
+export NEW_RELIC_ENVIRONMENT=development
+export PROJECT_PROCFILE=${PROJECT_HOME_DIR}/Procfile
+
+if [[ "${WT_DEPLOYED_SERVER_TYPE}xx" != "xx" ]]; then
+    export NEW_RELIC_ENVIRONMENT=${WT_DEPLOYED_SERVER_TYPE}
+fi
+
+if [[ "${WT_ENABLE_NEW_RELIC}" == "true" ]]; then
+    export PROJECT_PROCFILE=${PROJECT_HOME_DIR}/Procfile.newrelic
+fi
+
 # bring in local configurations from environment.d/*.sh
 if [ -d "${PROJECT_HOME_DIR}/etc/environment.d/" ]; then
     for i in ${PROJECT_HOME_DIR}/etc/environment.d/*.sh; do
