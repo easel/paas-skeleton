@@ -1,5 +1,5 @@
 # Makefile - provided by paas-skeleton.git
-# 
+#
 # This file is designed to be edited locally. Do not check changes into
 # paas-skeleton.git without a very good reason.
 #
@@ -30,4 +30,3 @@ endif
 # include ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv-makefile.inc
 
 include ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv-makefile.inc
-

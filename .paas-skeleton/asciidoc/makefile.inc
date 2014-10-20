@@ -10,5 +10,11 @@ build/specification.html: docs/specification.adoc .paas-skeleton/asciidoc/*
 docs/specification.adoc:
 	if [ ! -e docs/specification.adoc ]; then cp -v .paas-skeleton/asciidoc/specification.adoc docs/specification.adoc; fi
 
+build/specification.html: docs/specification.adoc .paas-skeleton/asciidoc/*
+	asciidoctor -o $@ docs/specification.adoc
+
+docs/specification.adoc:
+	if [ ! -e docs/specification.adoc ]; then cp -v .paas-skeleton/asciidoc/specification.adoc docs/specification.adoc; fi
+
 %.svg: %.gv
 	dot -Tsvg $< > $@

@@ -6,7 +6,7 @@
 if [[ "x${OPENSHIFT_REPO_DIR}x" != "xx" ]]; then
     PROJECT_HOME_DIR=${OPENSHIFT_REPO_DIR}
 else
-    PROJECT_HOME_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    PROJECT_HOME_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/
 fi
 export PROJECT_HOME_DIR
 
@@ -18,4 +18,9 @@ fi
 
 set --
 
+# load standard settings
 source ${PROJECT_HOME_DIR}/.paas-skeleton/environment.sh
+
+# become a python project
+# source ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv.sh
+

@@ -9,22 +9,14 @@
 # this file itself
 #
 
-
-# check on presence of a package at system
-source ${PROJECT_HOME_DIR}/.paas-skeleton/detect_os.sh
 # TODO: create etc/systems_packages.sh on all projects that are using .paas-skeleton
 # that file example:
 #
-# # !/bin/bash
-# # List of system pachages for current project
-# PACKAGES_UBUNTU_12_04="postgresql postgresql-contrib libpq-dev swig libncurses5-dev xmlsec1"
-# PACKAGES_UBUNTU_13_10="postgresql postgresql-contrib libpq-dev swig libncurses5-dev xmlsec1 python-m2crypto"
-# PACKAGES_MAC_OS="postgresql postgresql-contrib libpq-dev swig libncurses5-dev xmlsec1"
+# pull in utility functions
+source ${PROJECT_HOME_DIR}/.paas-skeleton/functions.sh
 
-source ${PROJECT_HOME_DIR}/.paas-skeleton/asciidoc/asciidoc-env.sh
-
-if [ -f "${PROJECT_HOME_DIR}/etc/systems_packages.sh" ]; then
-    source ${PROJECT_HOME_DIR}/.paas-skeleton/install_packages.sh
+if [[ "x${OPENSHIFT_DATA_DIR}x" == "xx" ]]; then
+    source ${PROJECT_HOME_DIR}/.paas-skeleton/asciidoc/asciidoc-env.sh
 fi
 
 # bail out if we don't know our home directory
@@ -57,12 +49,36 @@ if [ ! -d ${PAAS_SKELETON_WORK_DIR} ]; then
     mkdir -p ${PAAS_SKELETON_WORK_DIR}
 fi
 
-# add BINARY_PACKAGES or PIP_EXTRAS envs with additional python
-# packages, which differs between openshift and other systems
-source ${PROJECT_HOME_DIR}/etc/prepare_binary_and_extra_packages.sh
+# figure out what system we have
+source ${PROJECT_HOME_DIR}/.paas-skeleton/detect_os.sh
 
-# become a python project
-source ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv.sh
+# bring in local configurations from environment.d/*.sh
+if [ -d "${PROJECT_HOME_DIR}/etc/environment.d/" ]; then
+    for i in ${PROJECT_HOME_DIR}/etc/environment.d/*.sh; do
+        if [ -r "$i" ]; then
+            . $i
+        fi
+    done
+    unset i
+fi
+
+# if the platform we are on requires some packages, check if they
+# are installed and help the user to install them
+if [[ "$PAAS_SKELETON_PLATFORM" == "mac" ]]; then
+        install_brew_packages "${PACKAGES_MAC_OS}"
+
+elif [[ "$PAAS_SKELETON_PLATFORM" == "linux" ]]; then
+    if [[ "$PAAS_SKELETON_DISTRO" == "ubuntu_12.04" ]]; then
+        install_apt_packages "${PACKAGES_UBUNTU_12_04}"
+    elif [[ "$PAAS_SKELETON_DISTRO" == "ubuntu_13.10" ]]; then
+        install_apt_packages "${PACKAGES_UBUNTU_13_10}"
+    elif [[ "$PAAS_SKELETON_DISTRO" == "debian_7" ]]; then
+        install_apt_packages "${PACKAGES_DEBIAN_7}"
+    else
+        echo "No packages for ${PAAS_SKELETON_DISTRO} should be installed"
+    fi
+fi
+
 
 export NEW_RELIC_CONFIG_FILE=${PROJECT_HOME_DIR}/newrelic.ini
 export NEW_RELIC_ENVIRONMENT=development
@@ -75,34 +91,3 @@ fi
 if [[ "${WT_ENABLE_NEW_RELIC}" == "true" ]]; then
     export PROJECT_PROCFILE=${PROJECT_HOME_DIR}/Procfile.newrelic
 fi
-
-# bring in local configurations from environment.d/*.sh
-if [ -d "${PROJECT_HOME_DIR}/etc/environment.d/" ]; then
-    for i in ${PROJECT_HOME_DIR}/etc/environment.d/*.sh; do
-      if [ -r "$i" ]; then
-        . $i
-      fi
-    done
-    unset i
-fi
-
-if [[ "${OPENSHIFT_POSTGRESQL_DB_URL}xx" != "xx" ]]; then
-    export DATABASE_URL=$OPENSHIFT_POSTGRESQL_DB_URL/$PGDATABASE
-    export DJANGO_SETTINGS_MODULE="${PROJECT_NAME}.settings"
-else
-    export DJANGO_SETTINGS_MODULE="${PROJECT_NAME}.test_settings"
-    export DATABASE_URL="postgres://localhost/${PROJECT_NAME}_test"
-fi
-
-if [[ "${OPENSHIFT_PATTON_IP}xx" == "xx" ]]; then
-    export OPENSHIFT_PATTON_IP="127.0.0.1"
-    export OPENSHIFT_PATTON_PORT="50009"
-fi
-
-export ES_CLASSPATH="$VE_ROOT/share/elasticsearch/lib/*"
-if [[ "${ELASTICSEARCH_SERVER_URL}xx" != "xx" ]]; then
-    export ELASTICSEARCH_SERVER_URL="$ELASTICSEARCH_SERVER_URL"
-else
-    export ELASTICSEARCH_SERVER_URL="http://localhost:50015"
-fi
-

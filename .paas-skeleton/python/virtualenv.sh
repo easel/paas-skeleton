@@ -18,7 +18,6 @@ if [[ "x${PIP_DOWNLOAD_CACHE}x" == "xx" ]]; then
 fi
 
 # create the virtual environment only if it does not already exist
-
 if [ ! -f ${PYTHON_BIN} ]; then 
     python2.7 ${PROJECT_HOME_DIR}/.paas-skeleton/python/virtualenv.py \
         --no-site-packages \
